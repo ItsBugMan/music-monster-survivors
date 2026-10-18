@@ -6,7 +6,7 @@ Music Monster is a single-player, music-driven survival action game inspired by 
 
 **[Play in your browser](https://itsbugman.github.io/music-monster-survivors/)** · [Download the repository](https://github.com/ItsBugMan/music-monster-survivors/archive/refs/heads/main.zip)
 
-The current build includes three 30-minute stages, unlockable Endless modes, 24 weapons with evolutions, 12 passive items, a permanent Gold Shop, transferable saves, a switchable 2D/2.5D camera, and seven embedded BGM tracks.
+The current build includes four 30-minute stages, unlockable Endless modes, 24 weapons with evolutions, 12 passive items, a permanent Gold Shop, transferable saves, a switchable 2D / 2.5D / 3D camera, and seven embedded BGM tracks.
 
 ## Quick start
 
@@ -26,7 +26,9 @@ Practice has its own roster and stage progress; the permanent Gold Shop uses the
 | Pointer/touch movement | Press and drag inside the arena |
 | Attack | Automatic; no attack button required |
 | Pause/resume | P, Escape, or the Pause button |
-| Switch 2D / 2.5D | V or the View button |
+| Cycle view 2D → 2.5D → 3D | V or the View button (or pick a view in Pause → Camera view) |
+| 3D camera: rotate / tilt | Q / E rotate, R / F tilt, or right-drag (on-screen ⟲ ⟳ Tilt buttons for touch) |
+| 3D camera: zoom / reset | Mouse wheel or + / −, C or Reset |
 | Select rewards | Click or tap a reward |
 | Inspect evolution requirements | Pause → Build & evolution guide |
 | End a run early | Pause → End run |
@@ -73,8 +75,9 @@ Special generated passives, when present, include:
 | Midnight Gardens | Moonwells, witchwood, and forgotten ruins | 30 minutes |
 | Static Cathedral | Courtyards, vaults, and signal organs | 30 minutes |
 | The Final Frequency | Reactors, ash fields, and broken antennas | 30 minutes |
+| Neon Boulevard | A gridlocked city street grid: towers, wrecked cars, street lamps, plazas | 30 minutes |
 
-Each stage is a large, bounded 4,800 × 3,600 world with obstacles, landmarks, breakable crates, and pickups. Clear a stage to unlock its Endless mode and, where applicable, the next stage.
+Stages 1–3 are large, bounded 4,800 × 3,600 worlds with obstacles, landmarks, breakable crates, and pickups. **Neon Boulevard** is roughly twice that area (6,800 × 5,100): a street grid centred on your start point, with lit towers, parked cars and street lamps as obstacles, plazas at intersections, and the Gridlock King as its guardian. It unlocks after clearing The Final Frequency. Clear a stage to unlock its Endless mode and, where applicable, the next stage.
 
 **Endless** repeats the stage's 30-minute wave cycle with increasing enemy health, damage, and spawn pressure. You keep your current build between cycles. The goal is to survive as long as possible; best Endless survival time is recorded per stage.
 
@@ -255,9 +258,13 @@ Browser storage is specific to the browser profile and site origin. A local HTML
 
 ## Camera and visual effects
 
-The game starts in a traditional 2D view and smoothly transitions to a lowered 2.5D perspective with **V** or **View**. Characters render as billboards, while attacks use projected elevation, trails, columns, impact effects, and ground effects to give elemental combat depth.
+The game starts in a traditional 2D view. **V** (or the **View** button) cycles **2D → 2.5D → 3D**; the Pause menu also has a direct 2D / 2.5D / 3D picker. Your last choice is remembered and included in save export/import.
 
-Camera changes affect presentation, not movement coordinates, hitboxes, weapon range, or creature stats. This is a projected sprite-based game, not a fully modeled 3D world.
+- **2D**: fixed top-down orthographic camera.
+- **2.5D**: lowered perspective camera. Characters render as billboards, while attacks use projected elevation, trails, columns, impact effects, and ground effects. Unchanged by the 3D addition.
+- **3D**: a real WebGL scene with a free perspective camera (yaw, pitch, zoom), a depth buffer, a moonlight shadow map that follows you, and point lights from your signature effects. Obstacles, crates, pickups, landmarks and projectiles are 3D solids. Your creature and chart headliners are extruded into voxel slabs from the pixel art the generator already produced; chart enemies are camera-facing sprite planes (with silhouette shadows) using the same art. WASD / drag movement becomes relative to the 3D camera heading.
+
+Switching views cross-fades with a camera dolly. Camera changes affect presentation only, never movement coordinates, hitboxes, weapon range, or creature stats. If WebGL is unavailable (or its context is lost), 3D is skipped and the game stays in 2D/2.5D.
 
 ## Music and sound
 
@@ -291,6 +298,7 @@ This repository contains the playable release:
 | Music_Monster_Survivors.html | Alternate standalone entry point with the same game |
 | .nojekyll | Keeps the deployment as plain static files |
 | README.md | Player guide and release documentation |
+| src/ | Readable sources of the view-mode state machine, 3D renderer and the game-script integration block (already bundled into both HTML files) |
 
 There is no package installation or build step for these release files. JavaScript, styles, generated-game assets, and the BGM are bundled into the HTML. Each entry file is approximately 49 MB, so the first download can take time.
 
@@ -311,6 +319,6 @@ Practice gameplay and bundled music can run locally without a chart connection. 
 
 ## Implementation notes
 
-The current release keeps the original creature generator intact and layers gameplay adapters around it: chart snapshots and tiered enemy pools, camera projection and attack depth, run rewards and permanent progression, save validation/import/export, and sequential audio playback.
+The current release keeps the original creature generator intact and layers gameplay adapters around it: chart snapshots and tiered enemy pools, camera projection and attack depth, a three-state view controller (`MMSViewMode`) and a read-only WebGL 3D renderer (`MMSRender3D`, bundled three.js r149), run rewards and permanent progression, save validation/import/export, and sequential audio playback.
 
 The repository ships bundled release HTML rather than the full modular development workspace. Changes to the game should keep both HTML entry points synchronized. Automated checks have covered playlist lifecycle, audio decoding, chart spawning, progression/save handling, weapon rendering, and script parsing; full browser/device performance coverage is still limited.
