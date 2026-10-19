@@ -11,12 +11,14 @@ The current build includes four 30-minute stages, unlockable Endless modes, 24 w
 ## Quick start
 
 1. Open the game link above, or download and extract the repository and open **index.html** in a modern browser.
-2. Choose **Play Survivors practice — no Last.fm needed** for an immediate game. Alternatively, enter your Last.fm username and use **Meet your creatures** to load your music collection.
+2. Choose **Play Without Last.fm** (at the top of the page) for an immediate game. Alternatively, enter your Last.fm username and use **Meet your creatures** to load your music collection.
 3. Select a creature, stage, and enemy chart. A dual-element creature lets you choose which of its two signatures to start with.
 4. Move to avoid enemies while your weapon attacks automatically. Collect XP gems and choose upgrades.
 5. Survive the full 30-minute timer to clear a stage. Spend earned gold in the shop and keep developing your creatures between runs.
 
-Practice has its own roster and stage progress; the permanent Gold Shop uses the shared browser profile. You do not need a Last.fm account to try the game.
+Play Without Last.fm has its own roster and stage progress; the permanent Gold Shop uses the shared browser profile. You do not need a Last.fm account to try the game.
+
+Its roster has 28 creatures, all starting at level 1: nine elemental starters and 19 genre creatures (Rock, Pop, Metal, Rap, Country, Jazz, Classical, EDM, Punk, Reggae, Blues, Soul, Folk, K-Pop, Lo-fi, Funk, Latin, Synthwave, Gospel). Each has generated pixel art with a matching prop, and uses the normal elements, classes, passives and stat modifiers. Metal and Punk are Anarchists.
 
 ## Controls
 
@@ -38,7 +40,7 @@ Switching tabs or losing window focus pauses active gameplay. Reward and chest s
 
 ## Your music becomes your roster
 
-Each creature represents a song and artist, with generated pixel art, elements, a class, base stats, and applicable faction/song traits. Album metadata and saved cover data remain associated with the collection.
+Each creature represents a song and artist, with generated pixel art, elements, a class, base stats, and applicable faction/song traits. Album metadata and saved cover data remain associated with the collection and still feed creature generation, but album cover images are not shown in the interface.
 
 The character generator remains a data provider: gameplay systems consume its output without changing the underlying generator. Creature progression is tracked by normalized song title and artist.
 
@@ -76,8 +78,10 @@ Special generated passives, when present, include:
 | Static Cathedral | Courtyards, vaults, and signal organs | 30 minutes |
 | The Final Frequency | Reactors, ash fields, and broken antennas | 30 minutes |
 | Neon Boulevard | A gridlocked city street grid: towers, wrecked cars, street lamps, plazas | 30 minutes |
+| Sunset Shores | Palm groves, tide channels, beach umbrellas, and a sunset lighthouse | 30 minutes |
+| Harvest Hollow | Hay bales, silos, orchard rows, and an old red barn | 30 minutes |
 
-Stages 1–3 are large, bounded 4,800 × 3,600 worlds with obstacles, landmarks, breakable crates, and pickups. **Neon Boulevard** is roughly twice that area (6,800 × 5,100): a street grid centred on your start point, with lit towers, parked cars and street lamps as obstacles, plazas at intersections, and the Gridlock King as its guardian. It unlocks after clearing The Final Frequency. Clear a stage to unlock its Endless mode and, where applicable, the next stage.
+Stages 1–3 are large, bounded 4,800 × 3,600 worlds with obstacles, landmarks, breakable crates, and pickups. **Neon Boulevard** is roughly twice that area (6,800 × 5,100): a street grid centred on your start point, with lit towers, parked cars and street lamps as obstacles, plazas at intersections, and the Gridlock King as its guardian. It unlocks after clearing The Final Frequency. **Sunset Shores** is the same 6,800 × 5,100 size: sandy ground cut by shallow tide channels, with palm trees, striped beach umbrellas and boulders as obstacles, and the Tidebreaker as its guardian. It unlocks after clearing Neon Boulevard. **Harvest Hollow** is the same 6,800 × 5,100 size: grassy fields cut by dirt paths, with hay bales, orchard trees, silos and boulders as obstacles, and the Scarecrow King as its guardian. It unlocks after clearing Sunset Shores. Clear a stage to unlock its Endless mode and, where applicable, the next stage.
 
 **Endless** repeats the stage's 30-minute wave cycle with increasing enemy health, damage, and spawn pressure. You keep your current build between cycles. The goal is to survive as long as possible; best Endless survival time is recorded per stage.
 
@@ -104,9 +108,9 @@ Newly available tiers receive more spawn weight, while earlier tiers can continu
 
 Boss encounters are scheduled at elapsed minutes **5, 10, 15, 20, 25, and 29** in each cycle. The boss system uses designated top-three entries from Apple Music US and Last.fm US, working toward the top-ranked headliners. This boss rotation is separate from the regular-enemy chart selector.
 
-Bosses are larger generated creatures with elemental attacks. When a preview is available, the BGM is ducked and up to 30 seconds of the boss track plays as entrance music. Preview volume responds to player distance. If the browser blocks it, use **Play entrance**.
+Bosses are larger generated creatures with elemental attacks. The normal soundtrack keeps playing when a boss spawns; there is no boss entrance music.
 
-If chart services fail or time out, original enemy waves and guardians stand in. Missing previews do not prevent combat or stop the normal soundtrack.
+If chart services fail or time out, original enemy waves and guardians stand in.
 
 ## Building a run
 
@@ -240,6 +244,10 @@ Gold earned during runs goes into a global browser-profile balance. Buy permanen
 
 Each next price is rounded up from the base price multiplied by 1.65 to the number of ranks already purchased. Run gold combines in-run gold, survival time, kills, and a stage-clear bonus; Royalties increases the payout.
 
+## Last.fm attribution
+
+This game uses data from the Last.fm API. A "Music data powered by Last.fm" credit linking to https://www.last.fm is shown on the page, creature cards link each artist name to its Last.fm artist page, and Last.fm-sourced chart headliners link to their Last.fm track page. Please keep this attribution in place when hosting or modifying the game.
+
 ## Saves, album data, and moving between devices
 
 Progress is saved locally in the browser. There is no automatic cloud-save synchronization.
@@ -278,7 +286,7 @@ Seven high-quality VBR MP3 tracks are embedded directly in the HTML. Each run be
 6. Neon Overdrive Protocol
 7. Shrine of Falling Stars
 
-The previous single-track BGM has been replaced. Music and sound effects have independent toggles and volume controls. BGM follows gameplay pause/resume and ducks for available chart-boss entrance previews.
+The previous single-track BGM has been replaced. Music and sound effects have independent toggles and volume controls. BGM follows gameplay pause/resume.
 
 Browsers may require a click before allowing audio. Start a run or interact with the music controls if playback is blocked. No companion audio folder is needed for this release.
 
@@ -304,16 +312,15 @@ There is no package installation or build step for these release files. JavaScri
 
 For GitHub Pages, use **Settings → Pages → Deploy from a branch → main → /(root)**. The game uses relative/site-safe resources rather than machine-specific paths.
 
-Practice gameplay and bundled music can run locally without a chart connection. Last.fm collection loading, fresh charts, external cover URLs, and boss previews need their online services. A service outage or browser restriction may affect those features while fallback gameplay remains available.
+Play Without Last.fm and bundled music can run locally without a chart connection. Last.fm collection loading, fresh charts, and external cover URLs need their online services. A service outage or browser restriction may affect those features while fallback gameplay remains available.
 
 ## Troubleshooting
 
 - **The page seems unchanged after an update:** reload without cache, or verify you opened the current index.html rather than an older downloaded copy.
 - **First load takes a while:** the self-contained build includes the full soundtrack. Let the download finish.
 - **No music:** check Music is on and the volume is above zero; click a game control to allow audio playback.
-- **No boss preview:** previews are not available for every track. Use Play entrance if offered; otherwise normal BGM continues.
 - **Charts will not load:** use the fallback waves, retry Reload chart bosses, or try another enemy chart.
-- **My collection is unavailable:** check the username and network connection, or use the practice roster.
+- **My collection is unavailable:** check the username and network connection, or use Play Without Last.fm.
 - **Progress differs between local and web versions:** export the save from the version holding your progress, then import it into the other.
 - **A run restarted after closing the tab:** only its earned progression is checkpointed; live runs are not resumable.
 
