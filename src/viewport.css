@@ -29,7 +29,18 @@ body{min-height:0!important}#root{height:100%;overflow:auto;overscroll-behavior:
 .mm.game-shell .home-menu .home-copy{max-width:540px;font-size:15px;line-height:1.8;color:#adc4cf}.mm.game-shell .home-actions{display:flex;gap:10px;flex-wrap:wrap}.mm.game-shell .home-actions .accent{min-width:170px;font-size:18px}
 .mm.game-shell .home-menu .stages{margin:0;gap:12px}.mm.game-shell .home-menu .stage{min-height:0;padding:16px}.mm.game-shell .home-menu .stage h3{margin:0 0 7px;font-size:18px}.mm.game-shell .home-menu .stage p{font-size:12px}.mm.game-shell .home-menu>h3{margin-top:6px}
 .mm.game-shell .shell-footer{font-size:11px;color:#829bab;display:flex;gap:20px;flex-wrap:wrap}.mm.game-shell .shell-footer a{color:#79ead2}.mm.game-shell .shell-page{width:min(900px,100%);margin:auto;padding:30px 24px}.mm.game-shell .shell-page>h2{margin:25px 0}.mm.game-shell .shell-page .banner{border-radius:12px;margin:12px 0}.mm.game-shell .shell-page .audio-controls{display:flex;flex-wrap:wrap;gap:15px}
-.library-return{position:fixed;right:16px;top:12px;z-index:90;padding:10px 15px;border:1px solid #79ead2;border-radius:10px;background:#132b30;color:#dcfff6;cursor:pointer}
+/* The original collection stays mounted; only its presentation fills the viewport. */
+#root{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;box-sizing:border-box;background:radial-gradient(ellipse at 80% 0%,#25433a77,transparent 55%),#090f1b;scrollbar-color:#3c625f #090f1b;overflow-x:hidden}
+body:has(.library-return)::before{content:'MUSIC COLLECTION';position:fixed;inset:0 0 auto;height:72px;box-sizing:border-box;display:flex;align-items:center;padding:0 max(24px,env(safe-area-inset-left));z-index:89;background:#101c2cf2;border-bottom:1px solid #294054;color:#b9f4e5;font:700 13px system-ui;letter-spacing:2px;backdrop-filter:blur(12px);pointer-events:none}
+#root main{box-sizing:border-box;width:100%!important;max-width:none!important;min-height:100%;margin:0!important;padding:104px clamp(20px,4vw,64px) 64px!important}
+#root main>h1{color:#e9fff9;font-size:clamp(30px,4vw,52px)!important;letter-spacing:-.04em}
+#root main>p{max-width:760px}
+#root main>form:has(#lfm-user){box-sizing:border-box;width:100%;max-width:none!important;min-height:min(440px,55vh);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(24px,5vw,64px);border:1px solid #315052;border-radius:20px;background:radial-gradient(ellipse at 100% 0%,#24544866,transparent 65%),#121f30}
+#root main>form:has(#lfm-user) input{box-sizing:border-box;max-width:100%}
+#root main>details{padding-bottom:24px}
+.library-return{position:fixed;right:max(24px,env(safe-area-inset-right));top:17px;z-index:90;padding:10px 15px;border:1px solid #79ead2;border-radius:10px;background:#132b30;color:#dcfff6;cursor:pointer;font:13px system-ui}
+.library-return:focus-visible{outline:3px solid #79ead2;outline-offset:3px}
+@media(max-width:520px){body:has(.library-return)::before{height:68px;padding-left:16px;font-size:10px;letter-spacing:1px}.library-return{right:12px;top:16px;font-size:11px;padding:9px 10px}#root main{padding:88px 16px 64px!important}#root main>form:has(#lfm-user){padding:24px;min-height:0}}
 .library-credit{position:fixed;bottom:8px;right:16px;z-index:90;color:#aac4d2;background:#111d2b;padding:6px 12px;border-radius:8px;font:11px system-ui}.library-credit a{color:#79ead2}
 .mm.game-shell .fullscreen-error{position:absolute;z-index:30;right:16px;bottom:16px;max-width:calc(100% - 32px);pointer-events:none}
 @media(min-width:851px) and (max-width:1200px){.mm.game-shell .boss-overlay{top:110px}.mm.game-shell .hud-layer:has(.boss-overlay:not([hidden])) .run-notice{top:155px}}
