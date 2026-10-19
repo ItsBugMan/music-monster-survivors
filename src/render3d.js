@@ -413,7 +413,7 @@
         rec.body = mesh; rec.kind = 'boss'; rec.mats = { n: 0x151515, h: 0xffffff, f: 0x96e6ff };
         group.add(mesh); const ring = this.ring(this.col(colors[e.element] || '#fa6384'), 0.9, 0.85); ring.scale.setScalar(e.r + 14); group.add(ring);
         rec.size = e.bossSize;
-      } else if (e.chartEnemy && e.enemySprite) {
+      } else if (e.enemySprite) {
         const s = this.spriteMaterials(e.enemySprite), size = e.enemySize;
         const mesh = new THREE.Mesh(this.unitPlane, s.n); mesh.scale.set(size, size, 1); mesh.position.y = size * 0.5;
         mesh.castShadow = true; mesh.customDepthMaterial = s.depth; mesh.receiveShadow = false;

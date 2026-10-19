@@ -54,7 +54,7 @@ Creature stats affect gameplay:
 | ATK | Weapon damage multiplier |
 | DEF | Damage reduction |
 | SPD | Movement speed |
-| LCK | Critical-hit chance |
+| LCK | Critical-hit chance, reward rarity, loot and event luck |
 
 **Guardian** adds starting health, **Brawler** adds damage, **Sprinter** adds movement speed, and **Trickster** adds critical-hit chance. Generated individual stat modifiers apply in combat, with a modifier range of −20% to +35%. Anarchist creatures also receive +4 percentage points of critical-hit chance. The creature selection screen shows the resulting starting combat profile.
 
@@ -91,7 +91,7 @@ Enemy health grows faster in later waves, with additional stage and Endless scal
 
 Before starting a run, choose **Last.fm US** or **Last.fm Global** as the enemy chart. The game prepares a snapshot at run start, so a chart refresh cannot change enemy identities halfway through the run.
 
-Higher chart positions mean stronger enemies: #100 is near the weak end, while #4–10 produce elite threats. Rank affects health, damage, speed, size, and XP rewards. Song identity determines the generated creature appearance and helps select its enemy archetype.
+Higher chart positions mean stronger enemies: #100 is near the weak end, while #4–10 produce elite threats. Rank affects health, damage, speed, size, and XP rewards. Song identity determines the generated creature appearance. Combat roles apply consistent multipliers after the rank budget, so higher ranks remain stronger within each role; a tank can have more HP than a higher-ranked assassin. Roles never change chart identity, pool unlock times, or the reserved boss ranks.
 
 | Pool | Chart ranks | First available at elapsed time |
 | --- | --- | --- |
@@ -111,6 +111,15 @@ Boss encounters are scheduled at elapsed minutes **5, 10, 15, 20, 25, and 29** i
 Bosses are larger generated creatures with elemental attacks. The normal soundtrack keeps playing when a boss spawns; there is no boss entrance music.
 
 If chart services fail or time out, original enemy waves and guardians stand in.
+
+Four special roles join ordinary waves. They reuse chart creatures' generated art; without charts, their art is requested through the same character-generator wrapper and cached for the run.
+
+- **One-Hit Wonder** appears from minute 1: 65% health, fast movement, and a 0.65-second visible windup before a committed dash. Dodge sideways during the windup.
+- **Earworm** appears from minute 2 in packs of up to three, using the existing wave budget. They surround the player and apply a non-stacking nearby debuff: movement −15%, attack cooldown +20%. Leave their 100-unit radius and it expires after 1.5 seconds. Prism Shield blocks it.
+- **B-Side** appears from minute 3: 180% health, 65% speed, and a 130-unit protective aura. Nearby smaller allies take 30% less damage. Auras do not stack or protect other B-Sides or bosses.
+- **Bonus Track** gets a rare spawn check every 45 seconds, improved by Luck, with at most one alive. It never attacks, flees when approached, and escapes after 28 seconds without a reward. Defeating it awards 200 gold plus 8 per elapsed cycle-minute (with a Luck bonus), an upgrade chest, Prism Shield, and Overture. Its chest follows the usual minute-10 evolution gate.
+
+Wave population, health growth, stage multipliers, and Endless pressure have been reduced to make room for these mechanics and lower common-rarity bonuses. The 500-enemy cap and scheduled headliner encounters remain in place.
 
 ## Building a run
 
@@ -170,9 +179,15 @@ To evolve a weapon, reach **weapon level 8**, own **at least one rank** of its m
 
 Chests otherwise upgrade owned items, can grant multiple rewards, and award gold. Luck improves the chance of multi-reward chests.
 
+Each offered weapon or passive rank rolls **Common, Uncommon, Rare, or Legendary** quality. The card shows the rolled quality and exact bonus; choosing it grants that same roll. Chest upgrades roll quality too. Rerolls generate new offers. Hover a loadout item to inspect the qualities collected so far.
+
+Passive ranks contribute 50%, 100%, 125%, or 150% of their reference effect. Metronome therefore grants **4%, 8%, 10%, or 12% cooldown reduction** per rank. Mixed qualities add together. Weapon rewards retain normal level improvements and add 0%, 4%, 8%, or 12% additive weapon damage per reward. Evolution retains these bonuses. Slot limits, rank limits and evolution recipes still use ranks, independently of quality.
+
+At zero Luck, rarity probabilities are 56% Common, 30% Uncommon, 12% Rare, and 2% Legendary. Creature Luck contributes `LCK × 0.4%`, including its individual stat modifier. Lucky Pressing adds its rolled effect. This shared bonus improves loot drops, fourth reward choices, multi-reward chests, treasure encounters, and rarity rolls, and shortens the interval between ambient pickups. Probabilities are capped. Critical-hit bonuses still apply separately.
+
 ### Run passive items
 
-These occupy passive slots and last for the current run. They are separate from permanent Gold Shop upgrades, even when names are similar.
+These occupy passive slots and last for the current run. They are separate from permanent Gold Shop upgrades, even when names are similar. The values below are the **Uncommon reference**; the reward card shows the actual rarity-scaled bonus.
 
 | Passive | Effect |
 | --- | --- |
@@ -181,13 +196,13 @@ These occupy passive slots and last for the current run. They are separate from 
 | Resonance Lens | +10% attack area per rank. |
 | Sustain Pedal | +15% effect duration per rank. |
 | Tempo Coil | +10% projectile speed per rank. |
-| Split Record | +1 projectile at ranks 2 and 5. |
+| Split Record | +0.4 projectile credit per rank; each full credit adds a projectile. |
 | Tour Boots | +10% movement speed per rank. |
 | Magnetic Pickup | +25 pickup range per rank. |
 | Heartstring | +0.2 HP regeneration per second per rank. |
 | Shell Case | -1 incoming damage per rank. |
 | Discovery Tape | +8% experience per rank. |
-| Lucky Pressing | +8% luck per rank; better choices and chests. |
+| Lucky Pressing | +8% luck per rank; better rarity, loot, choices, chests and treasure events. |
 
 ### Pickups and crates
 
@@ -329,3 +344,5 @@ Play Without Last.fm and bundled music can run locally without a chart connectio
 The current release keeps the original creature generator intact and layers gameplay adapters around it: chart snapshots and tiered enemy pools, camera projection and attack depth, a three-state view controller (`MMSViewMode`) and a read-only WebGL 3D renderer (`MMSRender3D`, bundled three.js r149), run rewards and permanent progression, save validation/import/export, and sequential audio playback.
 
 The repository ships bundled release HTML rather than the full modular development workspace. Changes to the game should keep both HTML entry points synchronized. Automated checks have covered playlist lifecycle, audio decoding, chart spawning, progression/save handling, weapon rendering, and script parsing; full browser/device performance coverage is still limited.
+
+The current gameplay balance policy is in `src/balance.js` and embedded in both HTML entry points. Run `node src/balance.test.cjs` to check release synchronization, script parsing, chart rank reservations, Luck and rarity rolls, granted bonuses, generated-art routing, and special-enemy combat behavior. These deterministic checks do not replace full 30-minute and Endless playtesting.

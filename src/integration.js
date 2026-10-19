@@ -113,8 +113,9 @@ function overlay3D(alpha){
  const q=cam3d.project(p.x,p.y,0);
  if(q){const w=50*q.scale,x=q.x-w/2,y=q.y+12;ctx.fillStyle="#3c263e";ctx.fillRect(x,y,w,5);ctx.fillStyle="#b8f475";ctx.fillRect(x,y,w*Math.max(0,p.hp)/p.max,5)}
  for(const e of enemies){
-  if(e.hp<=0||(e.type!=="elite"&&e.type!=="boss"))continue;
+  if(e.hp<=0||(e.type!=="elite"&&e.type!=="boss"&&!e.role))continue;
   const a=cam3d.project(e.x,e.y,(e.bossSize||e.enemySize||e.r*2)+10);if(!a)continue;
+  if(e.role){ctx.font="11px system-ui";ctx.textAlign="center";ctx.fillStyle=MMSBalance.roles[e.role].color;ctx.fillText(MMSBalance.roles[e.role].name+(e.windup>0?" · DASH!":""),a.x,a.y-(e.type==='elite'?26:12))}
   const col=e.type==="boss"?"#fa6384":"#f6c16e",w=Math.max(28,50*a.scale*(e.type==="boss"?1.5:1)),x=a.x-w/2;
   ctx.fillStyle="#321c33";ctx.fillRect(x,a.y-5,w,5);ctx.fillStyle=col;ctx.fillRect(x,a.y-5,w*Math.max(0,e.hp/e.max),5);
   if(e.type==="elite"&&e.chartEnemy){ctx.font="10px system-ui";ctx.textAlign="center";ctx.fillStyle="#ffe6a5";ctx.fillText("#"+e.chartEnemy.rank+" "+e.chartEnemy.name.slice(0,22),a.x,a.y-10)}
