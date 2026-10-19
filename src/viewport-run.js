@@ -16,7 +16,7 @@ function updateOverlayHud(){
  if(bossRef&&bossRef.hp>0)marks+=dot(bossRef.x,bossRef.y,3,'#ff7396');
  marks+='<polygon points="'+viewFootprint().map(v=>(clamp(v.x,0,MW)/MW*135).toFixed(2)+','+(clamp(v.y,0,MH)/MH*102).toFixed(2)).join(' ')+'" fill="none" stroke="#aacdc4" stroke-width=".7"/>'+dot(p.x,p.y,3,'#b8ffba');mini.querySelector('svg').innerHTML=marks;
 }
-function showRunSettings(){if(state.status==='playing')togglePause();if(state.status!=='paused')return;const panel=show('Settings','Sound, camera and display');panel.append(musicControls(),viewPicker(),cam3dRow,fullscreenButton(),button('Resume',togglePause,'accent'))}
+function showRunSettings(){if(state.status==='playing')togglePause();if(state.status!=='paused')return;const panel=show('Settings','Sound, camera and display');panel.append(comfortControls(),musicControls(),viewPicker(),cam3dRow,fullscreenButton(),button('Resume',togglePause,'accent'))}
 function resizeViewport(size){
  W=size.logicalWidth;H=size.logicalHeight;
  canvas.width=size.bufferWidth;canvas.height=size.bufferHeight;

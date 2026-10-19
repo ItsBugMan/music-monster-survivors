@@ -610,7 +610,7 @@
       this.sun.position.set(cx - 420, 900, cz - 300); this.sun.target.position.set(cx, 0, cz); this.sun.target.updateMatrixWorld();
 
       const camObj = cam.camera;
-      if (f.shake) { camObj.position.x += (Math.random() - 0.5) * f.shake * 2; camObj.position.y += (Math.random() - 0.5) * f.shake * 2; camObj.updateMatrixWorld(); }
+      if (f.shake && globalThis.MMSViewport?.comfort.shake!==false) { camObj.position.x += (Math.random() - 0.5) * f.shake * 2; camObj.position.y += (Math.random() - 0.5) * f.shake * 2; camObj.updateMatrixWorld(); }
       this.renderer.render(this.scene, camObj);
       return true;
     }

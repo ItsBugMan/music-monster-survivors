@@ -32,7 +32,14 @@ function showAchievements(){
  body.append(el('div','banner',(maxLevel>=25?'✓ ':'🔒 ')+'Rising star — reach creature level 25 · Best level '+maxLevel));
 }
 function showShellSettings(){
- const body=shellPage('Settings');body.append(el('h3','','Sound'),musicControls(),el('h3','','Starting camera'));
+ const body=shellPage('Settings');body.append(comfortControls(),el('h3','','Sound'),musicControls(),el('h3','','Starting camera'));
  const select=el('select');select.setAttribute('aria-label','Starting camera');for(const id of MMSViewMode.MODES){const option=el('option','',MMSViewMode.LABELS[id]);option.value=id;select.append(option)}select.value=MMSViewMode.load(localStorage,'music-monster:view:v1');select.onchange=()=>MMSViewMode.save(localStorage,'music-monster:view:v1',select.value);
  body.append(select,el('p','muted','3D starts when you enter the arena. If WebGL is unavailable, the game uses 2.5D. Rendering adapts to your display with a 2× pixel-ratio and four-million-pixel budget.'),fullscreenButton(),el('h3','','Save data'),button('Export save',exportMetaSave),button('Import save',showMetaImport));
+}
+function comfortControls(){
+ const group=el('fieldset','comfort-settings');group.append(el('legend','','Visual comfort'));
+ for(const [key,title,description] of [['shake','Screen shake','Camera movement from hits and explosions, in every view.'],['lights','Impact lighting','Brief, bright dynamic lights in 3D.'],['bloom','Bloom / glow','The bright glow around 3D effects.'],['numbers','Floating damage numbers','Animated damage text above enemies.']]){
+  const label=el('label'),input=el('input');input.type='checkbox';input.checked=MMSViewport.comfort[key];input.onchange=()=>MMSViewport.setComfort(key,input.checked);const text=el('span','',title);text.append(el('small','',description));label.append(input,text);group.append(label);
+ }
+ group.append(el('p','muted','Changes apply immediately and are saved on this browser. Attack warnings remain visible.'));return group;
 }

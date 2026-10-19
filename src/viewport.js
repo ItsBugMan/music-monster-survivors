@@ -26,5 +26,10 @@
   env.addEventListener('keydown',key);doc.addEventListener('fullscreenchange',sync);
   return {toggle,sync,dispose(){env.removeEventListener('keydown',key);doc.removeEventListener('fullscreenchange',sync)}};
  }
- return {measure,point,observe,fullscreen};
+ const comfortKey='music-monster:comfort:v1',defaults={shake:true,lights:true,bloom:true,numbers:true};
+ let saved={};try{saved=JSON.parse(globalThis.localStorage?.getItem(comfortKey)||'{}')||{}}catch{}
+ const reduced=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+ const comfort=Object.fromEntries(Object.entries(defaults).map(([key,value])=>[key,typeof saved[key]==='boolean'?saved[key]:reduced?false:value]));
+ function setComfort(key,value){if(!(key in defaults))return;comfort[key]=!!value;try{globalThis.localStorage?.setItem(comfortKey,JSON.stringify(comfort))}catch{}}
+ return {measure,point,observe,fullscreen,comfort,setComfort};
 });

@@ -88,7 +88,9 @@ function dropRenderer3d(message){
  view3dFailed=true;try{renderer3d?.dispose()}catch{}renderer3d=null;glCanvas?.remove();glCanvas=null;glLayoutKey='';
  if(viewMode.mode==='3d'){viewMode.force('2.5d');viewCamera.setProgress(1)}viewMode.blend3d=0;refreshViewUi();if(message)toast(message);
 }
+function engineShake(){return shake}
 function drawWorldLayers(){
+ const shake=MMSViewport.comfort.shake?engineShake():0;
  const blend=renderer3d?viewMode.blend3d:0;
  if(blend<=0){
   if(glCanvas&&glCanvas.style.display!=='none')glCanvas.style.display='none';
@@ -120,7 +122,7 @@ function overlay3D(alpha){
   ctx.fillStyle="#321c33";ctx.fillRect(x,a.y-5,w,5);ctx.fillStyle=col;ctx.fillRect(x,a.y-5,w*Math.max(0,e.hp/e.max),5);
   if(e.type==="elite"&&e.chartEnemy){ctx.font="10px system-ui";ctx.textAlign="center";ctx.fillStyle="#ffe6a5";ctx.fillText("#"+e.chartEnemy.rank+" "+e.chartEnemy.name.slice(0,22),a.x,a.y-10)}
  }
- for(const d of damageTexts){const a=cam3d.project(d.x,d.y+20,38+(.65-d.t)*60);if(!a)continue;ctx.font="bold 16px system-ui";ctx.fillStyle="#ffe69d";ctx.textAlign="center";ctx.fillText(d.text,a.x,a.y)}
+ for(const d of (MMSViewport.comfort.numbers?damageTexts:[])){const a=cam3d.project(d.x,d.y+20,38+(.65-d.t)*60);if(!a)continue;ctx.font="bold 16px system-ui";ctx.fillStyle="#ffe69d";ctx.textAlign="center";ctx.fillText(d.text,a.x,a.y)}
  ctx.restore();
 }
 
