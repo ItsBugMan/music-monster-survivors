@@ -89,7 +89,7 @@ Enemy health grows faster in later waves, with additional stage and Endless scal
 
 ## Chart-based enemies and bosses
 
-Before starting a run, choose **Last.fm US**, **Last.fm Global**, or **Apple Music US** as the enemy chart. The game prepares a snapshot at run start, so a chart refresh cannot change enemy identities halfway through the run.
+Before starting a run, choose **Last.fm US** or **Last.fm Global** as the enemy chart. The game prepares a snapshot at run start, so a chart refresh cannot change enemy identities halfway through the run.
 
 Higher chart positions mean stronger enemies: #100 is near the weak end, while #4–10 produce elite threats. Rank affects health, damage, speed, size, and XP rewards. Song identity determines the generated creature appearance and helps select its enemy archetype.
 
@@ -106,7 +106,7 @@ Newly available tiers receive more spawn weight, while earlier tiers can continu
 
 ### Chart headliners
 
-Boss encounters are scheduled at elapsed minutes **5, 10, 15, 20, 25, and 29** in each cycle. The boss system uses designated top-three entries from Apple Music US and Last.fm US, working toward the top-ranked headliners. This boss rotation is separate from the regular-enemy chart selector.
+Boss encounters are scheduled at elapsed minutes **5, 10, 15, 20, 25, and 29** in each cycle. The boss system uses designated top-three entries from the Last.fm Global and Last.fm US charts, working toward the top-ranked headliners. This boss rotation is separate from the regular-enemy chart selector.
 
 Bosses are larger generated creatures with elemental attacks. The normal soundtrack keeps playing when a boss spawns; there is no boss entrance music.
 
