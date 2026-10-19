@@ -3,13 +3,21 @@ const immersive=MMSViewport.fullscreen(root,message=>{let note=root.querySelecto
 let collectionReturn=null;
 function openCollection(){if(practice){window.dispatchEvent(new Event('mms-open-library'));return}if(document.fullscreenElement===root)document.exitFullscreen?.().catch(()=>{});root.hidden=true;collectionReturn=button('← Return to game',()=>{root.hidden=false;collectionReturn.remove();collectionReturn=null},'library-return');host.append(collectionReturn)}
 function fullscreenButton(){const b=button('⛶ Fullscreen',immersive.toggle);b.dataset.fullscreen='';queueMicrotask(immersive.sync);return b}
+function lastfmControls(){
+ const form=el('form','lastfm-connect'),label=el('label','','Your Last.fm username'),input=el('input'),row=el('div','lastfm-row');
+ input.name='username';input.autocomplete='username';input.setAttribute('aria-label','Your Last.fm username');input.setAttribute('autocapitalize','none');input.spellcheck=false;input.required=true;input.value=localStorage.getItem('song-creatures:lastfm-username')||'';
+ label.append(input);const submit=el('button','accent','Import Last.fm scrobbles');submit.type='submit';row.append(label,submit);form.append(el('h3','','Play with your music'),el('p','muted','Import your listening history to build your creature roster. No Last.fm password needed.'),row);
+ form.onsubmit=event=>{event.preventDefault();const username=input.value.trim();if(!username){input.focus();return}openCollection();window.dispatchEvent(new CustomEvent('mms-lastfm-connect',{detail:{username}}))};return form;
+}
+function playFromHome(){if(practice&&localStorage.getItem('song-creatures:lastfm-username')){openCollection();window.dispatchEvent(new Event('mms-lastfm-play'))}else menu()}
 function shellNav(){const nav=el('nav','shell-nav');nav.setAttribute('aria-label','Game navigation');nav.append(button('← Main menu',mainMenu),fullscreenButton());return nav}
 function shellPage(title){stop();root.dataset.screen='menu';root.replaceChildren(shellNav());const body=el('div','shell-page');body.append(el('h2','',title));root.append(body);return body}
 function mainMenu(){
  stop();enemyStartToken++;root.dataset.screen='home';root.replaceChildren();
  const panel=el('main','home-menu'),title=el('h1','','Music Monster');title.append(el('span','','SURVIVORS · LOST FREQUENCIES'));
  panel.append(el('div','eyebrow','YOUR MUSIC. YOUR MONSTERS.'),title,el('p','home-copy','Build your arsenal. Break the charts. Survive the encore. Every song has a monster waiting to be heard.'));
- const actions=el('div','home-actions');actions.append(button('▶ Play',menu,'accent'),button('Achievements',showAchievements),button('Settings',showShellSettings),fullscreenButton());
+ panel.append(lastfmControls());
+ const actions=el('div','home-actions');actions.append(button('▶ Play',playFromHome,'accent'),button('Achievements',showAchievements),button('Settings',showShellSettings),fullscreenButton());
  actions.append(button('Music collection',openCollection));
  panel.append(actions);difficultySelector(panel,mainMenu);
  const foot=el('footer','shell-footer'),credit=el('span','','Music data powered by '),link=el('a','','Last.fm');link.href='https://www.last.fm';link.target='_blank';link.rel='noopener noreferrer';credit.append(link);

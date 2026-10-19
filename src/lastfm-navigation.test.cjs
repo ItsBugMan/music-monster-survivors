@@ -1,0 +1,12 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert/strict');
+const html=fs.readFileSync('index.html','utf8'),start=html.indexOf('(0,de.useEffect)(()=>{const connect=event=>');
+const end=html.indexOf('(0,de.useEffect)(()=>{try{localStorage.setItem(Ng',start);
+assert.ok(start>=0&&end>start);
+const listeners=new Map(),state={};let cleanup;
+vm.runInNewContext(html.slice(start,end),{de:{useEffect(fn){cleanup=fn()}},window:{addEventListener(k,fn){listeners.set(k,fn)},removeEventListener(k){listeners.delete(k)}},_g:v=>state.saved=v,a:v=>state.username=v,u:v=>state.input=v,c:v=>state.tab=v});
+listeners.get('mms-lastfm-connect')({detail:{username:'  listener  '}});
+assert.deepEqual(state,{saved:'listener',username:'listener',input:'listener',tab:'collection'});
+listeners.get('mms-lastfm-play')();assert.equal(state.tab,'tower');
+listeners.get('mms-lastfm-connect')({detail:{username:'   '}});assert.equal(state.username,'listener');
+cleanup();assert.equal(listeners.size,0);
+console.log('Passed username handoff, persistence, roster navigation, empty input and cleanup checks.');
