@@ -134,7 +134,7 @@
       this.dummy = new THREE.Object3D(); this.tmpColor = new THREE.Color();
       const r = this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
       r.outputEncoding = THREE.sRGBEncoding; r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
-      r.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2)); r.setSize(width, height, false);
+      r.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2, Math.sqrt(4000000 / Math.max(1, width * height)))); r.setSize(width, height, false);
       this.onContextLost = e => { e.preventDefault(); this.lost = true; };
       canvas.addEventListener('webglcontextlost', this.onContextLost);
       this.canvas = canvas;
@@ -615,8 +615,12 @@
       return true;
     }
 
-    // CSS size of the layer; the camera keeps the game's logical 960x600 space so HUD projection stays valid.
-    resize(cssWidth, cssHeight) { this.renderer.setPixelRatio(Math.min(globalThis.devicePixelRatio || 1, 2)); this.renderer.setSize(cssWidth, cssHeight, false); }
+    // Buffers use CSS size and bounded DPR; camera projection uses the matching logical aspect.
+    resize(cssWidth, cssHeight, logicalWidth=cssWidth, logicalHeight=cssHeight) {
+      const ratio=Math.min(globalThis.devicePixelRatio||1,2,Math.sqrt(4000000/Math.max(1,cssWidth*cssHeight)));
+      this.cam.resize(logicalWidth,logicalHeight);
+      this.renderer.setPixelRatio(ratio);this.renderer.setSize(cssWidth,cssHeight,false);
+    }
     dispose() {
       this.canvas.removeEventListener('webglcontextlost', this.onContextLost);
       this.scene.traverse(o => { o.geometry?.dispose?.(); const m = o.material; if (m) (Array.isArray(m) ? m : [m]).forEach(x => x.dispose?.()); });

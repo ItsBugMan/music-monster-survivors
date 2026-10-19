@@ -11,8 +11,8 @@ The current build includes four 30-minute stages, unlockable Endless modes, 24 w
 ## Quick start
 
 1. Open the game link above, or download and extract the repository and open **index.html** in a modern browser.
-2. Choose **Play Without Last.fm** (at the top of the page) for an immediate game. Alternatively, enter your Last.fm username and use **Meet your creatures** to load your music collection.
-3. Select a creature, stage, and enemy chart. A dual-element creature lets you choose which of its two signatures to start with.
+2. The full-window main menu opens automatically. Choose **Play** to use the built-in roster, or **Music collection** to enter your Last.fm username and load your collection. **Return to game** brings you back from the collection page.
+3. Choose a difficulty, then select a creature, stage, and enemy chart. A dual-element creature lets you choose which of its two signatures to start with.
 4. Move to avoid enemies while your weapon attacks automatically. Collect XP gems and choose upgrades.
 5. Survive the full 30-minute timer to clear a stage. Spend earned gold in the shop and keep developing your creatures between runs.
 
@@ -28,8 +28,9 @@ Its roster has 28 creatures, all starting at level 1: nine elemental starters an
 | Pointer/touch movement | Press and drag inside the arena |
 | Attack | Automatic; no attack button required |
 | Pause/resume | P, Escape, or the Pause button |
+| Toggle fullscreen | Fullscreen button or Alt+Enter; F11 is also handled when the browser forwards it |
 | Cycle view 2D → 2.5D → 3D | V or the View button (or pick a view in Pause → Camera view) |
-| 3D camera: rotate / tilt | Q / E rotate, R / F tilt, or right-drag (on-screen ⟲ ⟳ Tilt buttons for touch) |
+| 3D camera: rotate / tilt | Q / E rotate, R / F tilt, or right-drag (Settings has ⟲ ⟳ Tilt buttons for touch) |
 | 3D camera: zoom / reset | Mouse wheel or + / −, C or Reset |
 | Select rewards | Click or tap a reward |
 | Inspect evolution requirements | Pause → Build & evolution guide |
@@ -37,6 +38,8 @@ Its roster has 28 creatures, all starting at level 1: nine elemental starters an
 | Audio | Music/SFX toggles and separate volume sliders |
 
 Switching tabs or losing window focus pauses active gameplay. Reward and chest screens also interrupt the action while you make a choice.
+
+The main menu includes **Achievements**, showing saved difficulty clears, stage clears for the current roster, and the level-25 creature milestone. **Settings** contains sound, starting-camera and save-transfer controls. In a run, Settings pauses the game and exposes sound, camera, fullscreen and detailed 3D orbit controls.
 
 ## Your music becomes your roster
 
@@ -85,6 +88,20 @@ Stages 1–3 are large, bounded 4,800 × 3,600 worlds with obstacles, landmarks,
 
 **Endless** repeats the stage's 30-minute wave cycle with increasing enemy health, damage, and spawn pressure. You keep your current build between cycles. The goal is to survive as long as possible; best Endless survival time is recorded per stage.
 
+### Difficulty selection
+
+Choose a difficulty on the run setup screen, separately from Standard or Endless mode. Normal is available by default. Complete a full 30-minute **Standard** run on Normal to permanently unlock **Hard**, then complete Hard to unlock **Dumb**. Unlocks are shared across stages, creatures, and practice/Last.fm rosters. Losses, early exits, and Endless runs do not unlock the next tier.
+
+- **Normal:** 1× enemy HP, damage, spawn density, gold and creature XP.
+- **Hard:** 1.5× enemy HP, 1.25× damage, 1.35× spawn density; more B-Sides and One-Hit Wonders. Run rewards grant 1.5× gold and 1.25× creature XP.
+- **Dumb:** 2.5× enemy HP, 2× damage, 2× spawn density; aggressive Earworm, B-Side and One-Hit Wonder spawns. Run rewards grant 2.5× gold and 2× creature XP.
+
+Difficulty multiplies the existing wave, stage, and Endless scaling. Population limits are 500 / 675 / 1,000 enemies respectively, with proportionally larger spawn batches. Boss schedules and chart rank reservations stay unchanged. The chosen tier remains fixed during the run and appears in the HUD and results.
+
+Reward multipliers apply to permanent creature XP and banked gold earned from the run, including unsuccessful and Endless attempts; they do not multiply arena XP gems. Checkpoints bank only the difference already earned, so the result screen does not pay bonuses twice. Gold Shop Royalties stacks with the difficulty gold multiplier.
+
+The JSON save stores `meta.highestCompletedDifficulty` (`null`, `normal`, `hard`, or `dumb`), along with each run checkpoint's difficulty and mode. Export/import and reload preserve these fields. Older version-2 saves remain compatible and default to no recorded difficulty completion; complete Normal to begin the new unlock progression.
+
 Enemy health grows faster in later waves, with additional stage and Endless scaling. Damage, movement, and spawn pressure also rise. Permanent upgrades make you stronger; enemies do not automatically copy your purchased power.
 
 ## Chart-based enemies and bosses
@@ -119,7 +136,7 @@ Four special roles join ordinary waves. They reuse chart creatures' generated ar
 - **B-Side** appears from minute 3: 180% health, 65% speed, and a 130-unit protective aura. Nearby smaller allies take 30% less damage. Auras do not stack or protect other B-Sides or bosses.
 - **Bonus Track** gets a rare spawn check every 45 seconds, improved by Luck, with at most one alive. It never attacks, flees when approached, and escapes after 28 seconds without a reward. Defeating it awards 200 gold plus 8 per elapsed cycle-minute (with a Luck bonus), an upgrade chest, Prism Shield, and Overture. Its chest follows the usual minute-10 evolution gate.
 
-Wave population, health growth, stage multipliers, and Endless pressure have been reduced to make room for these mechanics and lower common-rarity bonuses. The 500-enemy cap and scheduled headliner encounters remain in place.
+Normal wave population, health growth, stage multipliers, and Endless pressure have been reduced to make room for these mechanics and lower common-rarity bonuses. Normal retains its 500-enemy cap; higher difficulties scale this limit. Scheduled headliner encounters remain in place.
 
 ## Building a run
 
@@ -281,6 +298,12 @@ Browser storage is specific to the browser profile and site origin. A local HTML
 
 ## Camera and visual effects
 
+The arena fills the browser viewport edge to edge. The page itself never scrolls; long setup, collection and results screens scroll inside their own panels. Health, XP, wave information, equipment, the SVG minimap, settings and reward menus are HTML overlays above the render layers. Entering true fullscreen includes the entire game shell and its controls.
+
+Resizing the window, rotating a device or entering/exiting fullscreen resizes both canvas buffers and updates both camera projections. Rendering uses device pixel density up to 2×, with a four-million-pixel budget per canvas to limit high-resolution GPU load. Logical framing stays within 1,280 × 800 world-view units at the window's actual aspect ratio, and pointer coordinates map to those same units in every camera mode. Resizing clears active movement input to prevent stuck drags or keys.
+
+The launch menu does not create the WebGL renderer or start a gameplay animation loop. WebGL is initialized only when a run requests 3D, and resize/input listeners and GPU resources are released when leaving a run. The character generator remains an unchanged data provider.
+
 The game starts in a traditional 2D view. **V** (or the **View** button) cycles **2D → 2.5D → 3D**; the Pause menu also has a direct 2D / 2.5D / 3D picker. Your last choice is remembered and included in save export/import.
 
 - **2D**: fixed top-down orthographic camera.
@@ -346,3 +369,7 @@ The current release keeps the original creature generator intact and layers game
 The repository ships bundled release HTML rather than the full modular development workspace. Changes to the game should keep both HTML entry points synchronized. Automated checks have covered playlist lifecycle, audio decoding, chart spawning, progression/save handling, weapon rendering, and script parsing; full browser/device performance coverage is still limited.
 
 The current gameplay balance policy is in `src/balance.js` and embedded in both HTML entry points. Run `node src/balance.test.cjs` to check release synchronization, script parsing, chart rank reservations, Luck and rarity rolls, granted bonuses, generated-art routing, and special-enemy combat behavior. These deterministic checks do not replace full 30-minute and Endless playtesting.
+
+Run `node src/difficulty.test.cjs` to verify sequential difficulty unlocks, full-run victory gates, reward multipliers and checkpoint idempotency, backward-compatible save import/export, and enemy scaling across stages and Endless cycles.
+
+Viewport sources live in `src/viewport.js`, `src/viewport.css`, `src/shell-ui.js` and `src/viewport-run.js`. After editing them, run `node src/sync-viewport.cjs` to update both releases. `node src/viewport.test.cjs` checks pixel budgets, camera/pointer round trips, resize cleanup and fullscreen handling. Serve the repository locally and open `src/viewport-smoke.html` for interactive portrait, landscape and desktop checks against the real game.

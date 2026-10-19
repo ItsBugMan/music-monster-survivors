@@ -10,7 +10,7 @@ const viewMode=MMSViewMode.create({initial:MMSViewMode.load(localStorage,VIEW_KE
 const viewButton=button('View: 2D · V',cycleView);
 viewButton.setAttribute('aria-label','Cycle camera view: 2D, 2.5D, 3D');
 controls.append(viewButton);
-const cam3dRow=el('span');cam3dRow.style.cssText='display:none;gap:6px;align-items:center;flex-wrap:wrap';
+const cam3dRow=el('span','camera-orbit');cam3dRow.style.cssText='display:none;gap:6px;align-items:center;flex-wrap:wrap';
 for(const [text,label,fn] of [['⟲','Rotate camera left',()=>cam3d.rotate(-.35,0)],['⟳','Rotate camera right',()=>cam3d.rotate(.35,0)],['Tilt ▲','Raise camera',()=>cam3d.rotate(0,8)],['Tilt ▼','Lower camera',()=>cam3d.rotate(0,-8)],['＋','Zoom in',()=>cam3d.zoom(.88)],['－','Zoom out',()=>cam3d.zoom(1.14)],['Reset','Reset 3D camera',()=>cam3d.resetUser()]]){
  const b=button(text,()=>{if(cam3d)fn();canvas.focus()});b.setAttribute('aria-label',label);b.title=label;cam3dRow.append(b)}
 const cam3dHint=el('small','muted','3D camera: Q/E rotate · R/F tilt · wheel zoom · right-drag orbit · C reset');cam3dRow.append(cam3dHint);controls.append(cam3dRow);
@@ -61,7 +61,7 @@ function ensureRenderer3d(){
  try{
   glCanvas=document.createElement('canvas');glCanvas.setAttribute('aria-hidden','true');
   glCanvas.style.cssText='position:absolute;left:0;top:0;width:100%;height:100%;display:none;pointer-events:none';
-  arena.insertBefore(glCanvas,canvas);canvas.style.position='relative';
+  arena.insertBefore(glCanvas,canvas);canvas.style.position='absolute';
   renderer3d=new MMSRender3D.Renderer3D({canvas:glCanvas,width:W,height:H,camera:cam3d,shadowSize:coarsePointer?1024:2048,
    world:{MW,MH,stage,zone,obstacles,landmarks},art:{floor:bakeFloor,colors:COLORS,pickupColors,elementOf:vfxElement}});
   return true;
@@ -82,7 +82,7 @@ function bakeFloor(){
 function syncGlLayout(){
  const l=canvas.offsetLeft,t=canvas.offsetTop,w=canvas.offsetWidth,h=canvas.offsetHeight,key=[l,t,w,h,window.devicePixelRatio].join();
  if(key===glLayoutKey||!w||!h)return;glLayoutKey=key;
- Object.assign(glCanvas.style,{left:l+'px',top:t+'px',width:w+'px',height:h+'px'});renderer3d.resize(w,h);
+ Object.assign(glCanvas.style,{left:l+'px',top:t+'px',width:w+'px',height:h+'px'});renderer3d.resize(w,h,W,H);
 }
 function dropRenderer3d(message){
  view3dFailed=true;try{renderer3d?.dispose()}catch{}renderer3d=null;glCanvas?.remove();glCanvas=null;glLayoutKey='';
@@ -100,10 +100,10 @@ function drawWorldLayers(){
  if(!ok||renderer3d.lost){dropRenderer3d('The 3D view lost its graphics context — switched to 2.5D.');ctx.save();projectedWorld();ctx.restore();return}
  ctx.clearRect(0,0,W,H);
  if(blend<1){ // cross-fade: the unchanged canvas world is drawn off-screen, then blended over the 3D layer
-  if(!worldLayer){worldLayer=document.createElement('canvas');worldLayer.width=W;worldLayer.height=H}
-  const main=ctx;ctx=worldLayer.getContext('2d');ctx.clearRect(0,0,W,H);
+  if(!worldLayer){worldLayer=document.createElement('canvas');worldLayer.width=canvas.width;worldLayer.height=canvas.height}
+  const main=ctx;ctx=worldLayer.getContext('2d');ctx.setTransform(worldLayer.width/W,0,0,worldLayer.height/H,0,0);ctx.clearRect(0,0,W,H);
   try{ctx.save();ctx.translate(shake?rand(-shake,shake):0,shake?rand(-shake,shake):0);projectedWorld();ctx.restore()}finally{ctx=main}
-  ctx.globalAlpha=1-blend;ctx.drawImage(worldLayer,0,0);ctx.globalAlpha=1;
+  ctx.globalAlpha=1-blend;ctx.drawImage(worldLayer,0,0,W,H);ctx.globalAlpha=1;
  }
  overlay3D(blend);
 }
