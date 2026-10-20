@@ -1,7 +1,7 @@
 // Mount-scoped presentation. Existing save data is read; generator data is untouched.
 const immersive=MMSViewport.fullscreen(root,message=>{let note=root.querySelector('.fullscreen-error');if(!note){note=el('p','banner fullscreen-error');note.setAttribute('role','status');root.append(note)}note.textContent=message});
 let collectionReturn=null;
-function openCollection(){if(practice){window.dispatchEvent(new Event('mms-open-library'));return}if(document.fullscreenElement===root)document.exitFullscreen?.().catch(()=>{});root.hidden=true;collectionReturn=button('← Return to game',()=>{root.hidden=false;collectionReturn.remove();collectionReturn=null},'library-return');host.append(collectionReturn)}
+function openCollection(){window.dispatchEvent(new Event('mms-open-library'));window.dispatchEvent(new Event('mms-lastfm-collection'))}
 function fullscreenButton(){const b=button('⛶ Fullscreen',immersive.toggle);b.dataset.fullscreen='';queueMicrotask(immersive.sync);return b}
 function lastfmControls(){
  const form=el('form','lastfm-connect'),label=el('label','','Your Last.fm username'),input=el('input'),row=el('div','lastfm-row');

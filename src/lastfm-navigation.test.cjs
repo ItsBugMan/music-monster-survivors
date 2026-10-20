@@ -7,6 +7,9 @@ vm.runInNewContext(html.slice(start,end),{de:{useEffect(fn){cleanup=fn()}},windo
 listeners.get('mms-lastfm-connect')({detail:{username:'  listener  '}});
 assert.deepEqual(state,{saved:'listener',username:'listener',input:'listener',tab:'collection'});
 listeners.get('mms-lastfm-play')();assert.equal(state.tab,'tower');
+listeners.get('mms-lastfm-collection')();assert.equal(state.tab,'collection','Collection must leave the Play screen');
+listeners.get('mms-lastfm-play')();assert.equal(state.tab,'tower','Play must leave the catalog');
+assert.ok(html.includes('if(startAtSetup)menu();else mainMenu();'),'Imported roster opens directly in setup');
 listeners.get('mms-lastfm-connect')({detail:{username:'   '}});assert.equal(state.username,'listener');
 cleanup();assert.equal(listeners.size,0);
 console.log('Passed username handoff, persistence, roster navigation, empty input and cleanup checks.');

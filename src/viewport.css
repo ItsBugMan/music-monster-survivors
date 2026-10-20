@@ -42,6 +42,7 @@ body:has(.library-return)::before{content:'MUSIC COLLECTION';position:fixed;inse
 #root main>form:has(#lfm-user){box-sizing:border-box;width:100%;max-width:none!important;min-height:min(440px,55vh);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:clamp(24px,5vw,64px);border:1px solid #315052;border-radius:20px;background:radial-gradient(ellipse at 100% 0%,#24544866,transparent 65%),#121f30}
 #root main>form:has(#lfm-user) input{box-sizing:border-box;max-width:100%}
 #root main>details{padding-bottom:24px}
+#root .songdex-header{padding:24px 0;border-bottom:1px solid #315052;margin-bottom:20px}#root .songdex-header h2{margin:0;color:#b9f4e5;font-size:32px;letter-spacing:-1px}#root .songdex-header p{color:#a6bfcb;line-height:1.6}
 .library-return{position:fixed;right:max(24px,env(safe-area-inset-right));top:17px;z-index:90;padding:10px 15px;border:1px solid #79ead2;border-radius:10px;background:#132b30;color:#dcfff6;cursor:pointer;font:13px system-ui}
 .library-return:focus-visible{outline:3px solid #79ead2;outline-offset:3px}
 @media(max-width:520px){body:has(.library-return)::before{height:68px;padding-left:16px;font-size:10px;letter-spacing:1px}.library-return{right:12px;top:16px;font-size:11px;padding:9px 10px}#root main{padding:88px 16px 64px!important}#root main>form:has(#lfm-user){padding:24px;min-height:0}}
